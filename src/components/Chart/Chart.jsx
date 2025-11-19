@@ -189,7 +189,7 @@ function Chart({ chartData }) {
         </div>
 
         {/* Chart Container */}
-        <div className="p-6 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 h-screen">
+        <div className="p-6 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900">
           <div className="bg-white dark:bg-slate-800/50 rounded-lg p-4">
             <Line data={enhancedChartData} options={options} />
           </div>

@@ -9,14 +9,34 @@ import { useNavigate } from "react-router-dom";
 function InteractionPage() {
   const [file, setFile] = useState(null);
   const [query, setQuery] = useState("");
+  const [fieldError, setFieldError] = useState("");
   const { mutate, data, error, isPending } = useAnalyzeQuery();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!file || !query) return;
+    if (!file && !query) {
+      setFieldError("Please select an Excel file and enter your query.");
+      return;
+    }
+    if (!file) {
+      setFieldError("Please select an Excel file to analyze.");
+      return;
+    }
+    if (!query) {
+      setFieldError("Please enter your analysis query.");
+      return;
+    }
+    setFieldError(""); // Clear any previous field error
     mutate({ file, query });
   };
+
+  // Clear fieldError as soon as either field is filled
+  useEffect(() => {
+    if (file && query && fieldError) {
+      setFieldError("");
+    }
+  }, [file, query, fieldError]);
 
   // When data is received, navigate to /report
   useEffect(() => {
@@ -31,7 +51,8 @@ function InteractionPage() {
       <div className="flex w-full max-w-md items-center justify-between mb-8">
         <div>
           <span className="font-extrabold text-2xl tracking-tighter text-blue-600 dark:text-blue-400">
-            MarketLens<span className="text-blue-400 dark:text-blue-300">.ai</span>
+            MarketLens
+            <span className="text-blue-400 dark:text-blue-300">.ai</span>
           </span>
           <div className="text-xs sm:text-sm mt-1 text-slate-400 dark:text-slate-300 font-medium">
             Get instant, AI-powered market analytics from your Excel data.
@@ -45,12 +66,16 @@ function InteractionPage() {
       >
         <FileUpload onFileChange={setFile} />
         <QueryInput value={query} onChange={(e) => setQuery(e.target.value)} />
-        <Button type="submit" disabled={isPending || !file || !query}>
+        <Button type="submit" disabled={isPending}>
           {isPending ? "Analyzing..." : "Analyze"}
         </Button>
+        {fieldError && (
+          <p className="text-red-500 font-medium text-center mt-2">
+            {fieldError}
+          </p>
+        )}
         {error && <p className="text-red-500">{error.message}</p>}
       </form>
-      {/* (Optional: loading below form for large files, progress, etc.) */}
     </div>
   );
 }

@@ -50,7 +50,7 @@ function ReportPage() {
               </h1>
             </div>
             <DownloadButton
-              data={reportData}
+              data={reportData.summary}
               filename="real_estate_report.json"
             />
           </div>
